@@ -7,5 +7,5 @@
 |         2|    18650 Li-Ion batterij       |                      |           |                    |  2    |                  |
 |         3|    TB6612FNG mosfet            |  https://www.amazon.com/Dual-Motor-Driver-Module-TB6612FNG/dp/B08J3S6G2N/ref=sr_1_3?keywords=TB6612FNG&sr=8-3                    |           |                    |  1    |                  |
 |         4|   TCRT5000                     |   https://benl.rs-online.com/web/p/reflective-optical-sensors/7085017                   |           |                    |       |                  |
-|         5|                                |                      |           |                    |       |                  |
+|         5|                                |     https://benl.rs-online.com/web/p/microcontrollers/6230825    |           |                    |       |                  |
 |         6|                                |                      |           |                    |       |                  |
