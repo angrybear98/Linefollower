@@ -5,7 +5,7 @@ volatile bool isRunning = false;
 void setup() {
   pinMode(switchPin, INPUT_PULLUP);
   pinMode(ledPin, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(switchPin), toggleState, FALLING);
+  attachInterrupt(digitalPinToInterrupt(switchPin), toggleState, RISING);
 }
 
 void loop() {
@@ -22,4 +22,5 @@ void loop() {
 void toggleState() {
   isRunning = !isRunning;
 }
+
 
