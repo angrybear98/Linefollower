@@ -1,0 +1,51 @@
+#define stuur A0
+
+void setup()
+{
+  pinMode(3, OUTPUT);  // Motor 1, H-bridge control
+  pinMode(5, OUTPUT);  // Motor 1, H-bridge control
+  pinMode(9, OUTPUT);  // Motor 2, H-bridge control
+  pinMode(10, OUTPUT); // Motor 2, H-bridge control
+  pinMode(stuur, INPUT);
+  digitalWrite(3, 0);
+  digitalWrite(5, 0);
+  digitalWrite(9, 0);
+  digitalWrite(10, 0);
+  Serial.begin(9600);
+  Serial.println("hello");
+}
+
+void loop()
+{
+  int sensorValue = analogRead(stuur);
+  int value = map(sensorValue, 0, 1023, 0, 100);
+
+  int speed1, speed2, speed3, speed4;
+
+  if (value >= 45 && value <= 55)
+  {
+    speed1 = 255; // Motor 1 maintains full speed
+    speed2 = 0; // Motor 2 maintains full speed
+    speed3 = 255; // Motor 1 maintains full speed
+    speed4 = 0; // Motor 2 maintains full speed
+  }
+  else if (value < 45)
+  {
+    speed1 = map(value, 0, 45, 0, 255); // Motor 1 increases gradually
+    speed2 = map(value, 0, 45, 255, 0); // Motor 2 decreases gradually
+    speed3 = map(value, 0, 45, 0, 255); // Motor 1 increases gradually
+    speed4 = map(value, 0, 45, 255, 0); // Motor 2 decreases gradually
+  }
+  else
+  {
+    speed1 = map(value, 55, 100, 255, 0); // Motor 1 increases gradually
+    speed2 = map(value, 55, 100, 0, 255); // Motor 2 decreases gradually
+    speed3 = map(value, 55, 100, 255, 0); // Motor 1 increases gradually
+    speed4 = map(value, 55, 100, 0, 255); // Motor 2 decreases gradually
+  }
+
+  analogWrite(3, speed1);
+  analogWrite(5, speed2);
+  analogWrite(9, speed3);
+  analogWrite(10, speed4);
+}
