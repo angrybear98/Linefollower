@@ -47,9 +47,6 @@ void loop()
 
 void onUnknownCommand(char* command)
 {
-  SerialPort.print("unknown command: \"");
-  SerialPort.print(command);
-  SerialPort.println("\"");
   BluetoothPort.print("unknown command: \"");
   BluetoothPort.print(command);
   BluetoothPort.println("\"");
