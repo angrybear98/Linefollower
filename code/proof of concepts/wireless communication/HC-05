@@ -1,78 +1,24 @@
-#include "SerialCommand.h"
-#include "EEPROMAnything.h"
+#include <SoftwareSerial.h>
 
-#define SerialPort Serial
-#define BluetoothPort Serial1
-#define Baudrate 9600
+SoftwareSerial bluetoothSerial(10, 11); // RX, TX pins for HC-05 module
 
-SerialCommand sCmd(BluetoothPort);
-bool debug = false;
-bool start = false;
-bool led = false;
-unsigned long previous;
+int ledPin = 13; // Onboard LED pin
 
-struct param_t
-{
-  unsigned long CycleTime;
-} params;
-
-void setup()
-{
-  SerialPort.begin(Baudrate);
-  BluetoothPort.begin(Baudrate);
-  pinMode(13, OUTPUT);
-
-  sCmd.addCommand("set", onSet);
-  sCmd.addCommand("led", onled);
-  sCmd.setDefaultHandler(onUnknownCommand);
-
-  EEPROM_readAnything(0, params);
-
-  SerialPort.println("ready");
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+  bluetoothSerial.begin(9600);
 }
 
-void loop()
-{
-  sCmd.readSerial(); 
-  if (led) digitalWrite(13, HIGH);
-  else if (!led) digitalWrite(13, LOW);
-  unsigned long current = millis();
-  if (current - previous >= params.CycleTime)
-  {
-    previous = current;
-    if (debug) Serial.println("loop still running");
-    if (start) Serial.println("auto rijdt");
+void loop() {
+  if (bluetoothSerial.available() > 0) {
+    char command = bluetoothSerial.read();
+    if (command == '1') {
+      digitalWrite(ledPin, HIGH); // Turn on the LED
+      bluetoothSerial.println("LED ON");
+    } else if (command == '0') {
+      digitalWrite(ledPin, LOW); // Turn off the LED
+      bluetoothSerial.println("LED OFF");
+    }
   }
-}
-
-void onUnknownCommand(char* command)
-{
-  BluetoothPort.print("unknown command: \"");
-  BluetoothPort.print(command);
-  BluetoothPort.println("\"");
-}
-
-void onled()
-{
-  char* state = sCmd.next(); 
-  
-  if (strcmp(state, "on") == 0) led = true;
-  if (strcmp(state, "off") ==0) led = false;
-}
-
-void onSet()
-{  
-  char* param = sCmd.next();
-  char* value = sCmd.next();
-
-  if (strcmp(param, "debug") == 0)
-  {
-    if (strcmp(value, "on") == 0) debug = true;
-    else if (strcmp(value, "off") == 0) debug = false;
-  }
-  else if (strcmp(param, "cycle") == 0) params.CycleTime = atol(value);
-  else if (strcmp(param, "start") == 0) start = true;
-  else if (strcmp(param, "stop") == 0) start = false; 
-
-  EEPROM_writeAnything(0, params);
 }
