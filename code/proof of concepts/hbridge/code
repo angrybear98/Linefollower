@@ -1,82 +1,43 @@
-const int sensorPins[] = {A0, A1, A2, A3, A4, A5}; // Analog pins for sensors
-const int numSensors = 6;
+// Pin configuration
+const int motor1PWM = 9;    // PWM pin for Motor 1 speed control
+const int motor1Dir1 = 8;   // Direction control 1 for Motor 1
+const int motor1Dir2 = 7;   // Direction control 2 for Motor 1
 
-const int motorPin1 = 3;  // Right wheel
-const int motorPin2 = 5;  // Left wheel
+const int motor2PWM = 6;    // PWM pin for Motor 2 speed control
+const int motor2Dir1 = 5;   // Direction control 1 for Motor 2
+const int motor2Dir2 = 4;   // Direction control 2 for Motor 2
 
-const int threshold = 80;   // Threshold for considering a black line
-const int baseSpeed = 150;  // Adjust this value based on desired speed
-const float Kp = 0.5;       // Proportional gain
-
-unsigned long lastSensorPrintTime = 0;
-const unsigned long sensorPrintInterval = 1000; // Print every 1000 milliseconds (1 second)
+const int potentiometerPin = A0; // Analog pin for the potentiometer
 
 void setup() {
-  Serial.begin(9600); // Initialize serial communication
-  for (int i = 0; i < numSensors; ++i) {
-    pinMode(sensorPins[i], INPUT);
-  }
-  
-  pinMode(motorPin1, OUTPUT);
-  pinMode(motorPin2, OUTPUT);
+  // Motor control pins as outputs
+  pinMode(motor1PWM, OUTPUT);
+  pinMode(motor1Dir1, OUTPUT);
+  pinMode(motor1Dir2, OUTPUT);
+
+  pinMode(motor2PWM, OUTPUT);
+  pinMode(motor2Dir1, OUTPUT);
+  pinMode(motor2Dir2, OUTPUT);
 }
 
 void loop() {
-  int sensorValues[numSensors];
+  // Read the potentiometer value
+  int potValue = analogRead(potentiometerPin);
 
-  // Read sensor values
-  for (int i = 0; i < numSensors; ++i) {
-    sensorValues[i] = analogRead(sensorPins[i]);
-  }
+  // Map the potentiometer value to a range of motor speeds
+  int motorSpeed = map(potValue, 0, 1023, -255, 255);
 
-  // Check if all sensors are below the threshold (indicating no black line)
-  if (areAllSensorsBelowThreshold(sensorValues, threshold)) {
-    // Stop the motors
-    analogWrite(motorPin1, 0);
-    analogWrite(motorPin2, 0);
+  // Determine the direction based on the position of the potentiometer
+  int motorDirection1 = (potValue < 512) ? HIGH : LOW;
+  int motorDirection2 = (potValue > 512) ? HIGH : LOW;
 
-    // Print a message indicating no black line detected
-    Serial.println("No black line detected. Motors stopped.");
-  } else {
-    // Calculate error (difference between left and right sensors)
-    int error = sensorValues[3] - sensorValues[2];
+  // Set the motor speeds and directions
+  analogWrite(motor1PWM, abs(motorSpeed));
+  analogWrite(motor2PWM, abs(motorSpeed));
 
-    // Adjust motor speeds based on the error using proportional control
-    int rightSpeed = baseSpeed + int(Kp * error);
-    int leftSpeed = baseSpeed - int(Kp * error);
+  digitalWrite(motor1Dir1, motorDirection1);
+  digitalWrite(motor1Dir2, !motorDirection1);
 
-    // Make sure motor speeds are within a valid range
-    rightSpeed = constrain(rightSpeed, 0, 255);
-    leftSpeed = constrain(leftSpeed, 0, 255);
-
-    // Control the motors using the H-bridge
-    analogWrite(motorPin1, rightSpeed);
-    analogWrite(motorPin2, leftSpeed);
-  }
-
-  // Check if it's time to print sensor values
-  unsigned long currentTime = millis();
-  if (currentTime - lastSensorPrintTime >= sensorPrintInterval) {
-    // Print sensor values to Serial Monitor
-    Serial.println("Sensor Values:");
-    for (int i = 0; i < numSensors; ++i) {
-      Serial.print("Sensor ");
-      Serial.print(i);
-      Serial.print(": ");
-      Serial.println(sensorValues[i]);
-    }
-
-    // Update the last sensor print time
-    lastSensorPrintTime = currentTime;
-  }
-}
-
-bool areAllSensorsBelowThreshold(const int values[], int threshold) {
-  // Check if all sensor values are below the threshold
-  for (int i = 0; i < numSensors; ++i) {
-    if (values[i] >= threshold) {
-      return false; // At least one sensor is above or equal to the threshold
-    }
-  }
-  return true; // All sensors are below the threshold
+  digitalWrite(motor2Dir1, motorDirection2);
+  digitalWrite(motor2Dir2, !motorDirection2);
 }
