@@ -10,6 +10,7 @@ const int motor2Dir2 = 4;   // Direction control 2 for Motor 2
 const int potentiometerPin = A0; // Analog pin for the potentiometer
 
 void setup() {
+  Serial.begin(9600);
   // Motor control pins as outputs
   pinMode(motor1PWM, OUTPUT);
   pinMode(motor1Dir1, OUTPUT);
@@ -25,11 +26,22 @@ void loop() {
   int potValue = analogRead(potentiometerPin);
 
   // Map the potentiometer value to a range of motor speeds
-  int motorSpeed = map(potValue, 0, 1023, -255, 255);
+  int motorSpeed = (potValue >= 450 && potValue <= 550) ? 123 : map(potValue, 0, 1023, -255, 255);
 
   // Determine the direction based on the position of the potentiometer
   int motorDirection1 = (potValue < 512) ? HIGH : LOW;
   int motorDirection2 = (potValue > 512) ? HIGH : LOW;
+
+
+for (int speed = 0; speed < 256; speed++)
+{
+  
+}
+for (int speed = 255; speed < 0; speed--)
+{
+  
+}
+
 
   // Set the motor speeds and directions
   analogWrite(motor1PWM, abs(motorSpeed));
@@ -40,4 +52,10 @@ void loop() {
 
   digitalWrite(motor2Dir1, motorDirection2);
   digitalWrite(motor2Dir2, !motorDirection2);
+
+  // Print the potentiometer value to the serial monitor
+  Serial.print("Potentiometer Value: ");
+  Serial.println(potValue);
+
+  delay(100); // Adjust the delay as needed for your application
 }
