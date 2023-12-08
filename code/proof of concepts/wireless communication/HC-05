@@ -1,24 +1,61 @@
+#include "SerialCommand.h"
 #include <SoftwareSerial.h>
 
-SoftwareSerial bluetoothSerial(10, 11); // RX, TX pins for HC-05 module
-int ledPin = LED_BUILTIN; // Onboard LED pin
+#define SerialPort Serial
+#define BluetoothPort Serial1
+#define Baudrate 9600
+#define LED_PIN LED_BUILTIN
 
-void setup() {
-  pinMode(ledPin, OUTPUT);
-  Serial.begin(9600);
-  bluetoothSerial.begin(9600);
+// Define the software serial pins for Bluetooth communication
+SoftwareSerial BTSerial(10, 11); // RX, TX
+SerialCommand sCmd(BluetoothPort);
+
+void setup()
+{
+  SerialPort.begin(Baudrate); // set serial baudrate at 9600
+  BluetoothPort.begin(Baudrate);    // initialize software serial for Bluetooth
+  sCmd.addCommand("led", onLed);
+  sCmd.setDefaultHandler(onUnknownCommand);
+
+  SerialPort.println("ready");
+  pinMode(LED_PIN, OUTPUT); // Set the LED pin as an output
 }
 
-void loop() {
-  while (bluetoothSerial.available() > 0) {
-    char command = bluetoothSerial.read();
+void loop()
+{
+  sCmd.readSerial();
+}
 
-    if (command == '1') {
-      digitalWrite(ledPin, HIGH); // Turn on the LED
-      bluetoothSerial.println("LED ON");
-    } else if (command == '0') {
-      digitalWrite(ledPin, LOW); // Turn off the LED
-      bluetoothSerial.println("LED OFF");
+void onLed(char *command)
+{
+  // Parse the command to check if it is "led on" or "led off"
+  char *arg = sCmd.next(); // Get the argument following the command
+
+  if (arg != NULL)
+  {
+    if (strcmp(arg, "on") == 0)
+    {
+      digitalWrite(LED_PIN, HIGH); // Turn on the LED
+      SerialPort.println("LED turned on");
+      BluetoothPort.println("LED turned on");
+    }
+    else if (strcmp(arg, "off") == 0)
+    {
+      digitalWrite(LED_PIN, LOW); // Turn off the LED
+      SerialPort.println("LED turned off");
+      BluetoothPort.println("LED turned off");
     }
   }
+}
+
+void onUnknownCommand(char *command)
+{
+  SerialPort.print("unknown command: \"");
+  SerialPort.print(command);
+  SerialPort.println("\"");
+
+  // Send the unknown command over Bluetooth
+  BluetoothPort.print("unknown command: \"");
+  BluetoothPort.print(command);
+  BluetoothPort.println("\"");
 }
