@@ -1,8 +1,7 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial bluetoothSerial(10, 11); // RX, TX pins for HC-05 module
-
-int ledPin = 13; // Onboard LED pin
+int ledPin = LED_BUILTIN; // Onboard LED pin
 
 void setup() {
   pinMode(ledPin, OUTPUT);
@@ -11,8 +10,9 @@ void setup() {
 }
 
 void loop() {
-  if (bluetoothSerial.available() > 0) {
+  while (bluetoothSerial.available() > 0) {
     char command = bluetoothSerial.read();
+
     if (command == '1') {
       digitalWrite(ledPin, HIGH); // Turn on the LED
       bluetoothSerial.println("LED ON");
