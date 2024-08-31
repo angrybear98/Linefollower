@@ -7,19 +7,19 @@ lege repository die je als template kan gebruiken om een eigen repository te sta
   
 ## specifications
 
-microcontroller:
+microcontroller: ATmega32U4
 
-motors: 
+motors: 75:1 micro metal gearmotor
 
-h-bridge:
+h-bridge: l298N
 
-sensors:
+sensors: QTR-8
 
-batteries:
+batteries: 18650 Li-ion
 
-wireless communication:
+wireless communication: HC-05 bluetooth
 
-distance sensor - motors:
+distance sensor - motors: 
 
 weight:
 
