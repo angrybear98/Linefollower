@@ -1,61 +1,63 @@
-// Pin configuration
-const int motor1PWM = 9;    // PWM pin for Motor 1 speed control
-const int motor1Dir1 = 8;   // Direction control 1 for Motor 1
-const int motor1Dir2 = 7;   // Direction control 2 for Motor 1
+// Define motor control pins for Motor A
+const int in1 = 4;  // IN1 on the L298N
+const int in2 = 5;  // IN2 on the L298N
+const int enA = 9;  // ENA (Enable pin for Motor A) on the L298N
 
-const int motor2PWM = 6;    // PWM pin for Motor 2 speed control
-const int motor2Dir1 = 5;   // Direction control 1 for Motor 2
-const int motor2Dir2 = 4;   // Direction control 2 for Motor 2
+// Define motor control pins for Motor B
+const int in3 = 7;  // IN3 on the L298N
+const int in4 = 8;  // IN4 on the L298N
+const int enB = 10; // ENB (Enable pin for Motor B) on the L298N
 
-const int potentiometerPin = A0; // Analog pin for the potentiometer
+// Time management
+unsigned long previousMillis = 0;    // Stores the last time the motors changed direction
+const long interval = 2000;          // Interval between direction changes (in milliseconds)
+
+// Max speed limit (0-255 for PWM), 50% speed would be 127
+const int maxSpeed = 200;
 
 void setup() {
-  Serial.begin(9600);
-  // Motor control pins as outputs
-  pinMode(motor1PWM, OUTPUT);
-  pinMode(motor1Dir1, OUTPUT);
-  pinMode(motor1Dir2, OUTPUT);
+  // Set motor control pins as outputs
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
 
-  pinMode(motor2PWM, OUTPUT);
-  pinMode(motor2Dir1, OUTPUT);
-  pinMode(motor2Dir2, OUTPUT);
+  // Set ENA and ENB as outputs (PWM)
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+
+  // Set initial motor speed to 50%
+  analogWrite(enA, maxSpeed);
+  analogWrite(enB, maxSpeed);
+
+  // Start with motors spinning in opposite directions
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
 }
 
 void loop() {
-  // Read the potentiometer value
-  int potValue = analogRead(potentiometerPin);
+  // Get the current time
+  unsigned long currentMillis = millis();
 
-  // Map the potentiometer value to a range of motor speeds
-  int motorSpeed = (potValue >= 450 && potValue <= 550) ? 123 : map(potValue, 0, 1023, -255, 255);
+  // Check if the time interval has passed
+  if (currentMillis - previousMillis >= interval) {
+    // Save the last time the motors changed direction
+    previousMillis = currentMillis;
 
-  // Determine the direction based on the position of the potentiometer
-  int motorDirection1 = (potValue < 512) ? HIGH : LOW;
-  int motorDirection2 = (potValue > 512) ? HIGH : LOW;
+    // Toggle the motor directions
+    // Motor A direction
+    digitalWrite(in1, !digitalRead(in1));
+    digitalWrite(in2, !digitalRead(in2));
+    
+    // Motor B direction
+    digitalWrite(in3, !digitalRead(in3));
+    digitalWrite(in4, !digitalRead(in4));
+  }
 
-
-for (int speed = 0; speed < 256; speed++)
-{
-  
+  // Other tasks can be performed here while waiting for the next interval
 }
-for (int speed = 255; speed < 0; speed--)
-{
-  
-}
 
 
-  // Set the motor speeds and directions
-  analogWrite(motor1PWM, abs(motorSpeed));
-  analogWrite(motor2PWM, abs(motorSpeed));
 
-  digitalWrite(motor1Dir1, motorDirection1);
-  digitalWrite(motor1Dir2, !motorDirection1);
-
-  digitalWrite(motor2Dir1, motorDirection2);
-  digitalWrite(motor2Dir2, !motorDirection2);
-
-  // Print the potentiometer value to the serial monitor
-  Serial.print("Potentiometer Value: ");
-  Serial.println(potValue);
-
-  delay(100); // Adjust the delay as needed for your application
-}
