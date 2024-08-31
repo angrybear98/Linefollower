@@ -14,8 +14,9 @@
 | HC-05 Bluetooth module        | 1        | 5,15                   | [Link](https://opencircuit.shop/product/hc-05-bluetooth-module-met-adapter)                               |
 | Li-ion battery 3,6V 18650     | 2        | 7,5                    | [Link](https://www.123accu.nl/XTAR-14500-batterij-3-7-V-2A-800-mAh-i49468.html?channable=056b7a3132335f70726f647563745f696400f3&gad_source=1) |
 | 18650 battery holder 2x       | 1        | 1                      | [Link](https://www.otronic.nl/nl/18650-batterijhouder-dubbel.html?source=googlebase&gad_source=1)         |
+| Boost converter module        | 1        | 3,5                    | -                                                                                                         |
 
-**Total:** 119,55 euro
+**Total:** 123,05 euro
 
 ## Optional Components
 
@@ -27,4 +28,4 @@
 | Experiment print plate  | 1        | 2,5                    | [Link](https://opencircuit.shop/product/experiment-print-6.5-cm-14.5-cm-lanes-2-pieces)|
 | Soldering station       | 1        | 62,2                   | [Link](https://opencircuit.shop/product/soldering-station-ceramic-heater-48w-150-420-c) |
 
-**Total + Optional:** 192,35 euro
+**Total + Optional:** 195,85 euro
