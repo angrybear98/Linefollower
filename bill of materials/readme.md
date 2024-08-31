@@ -1,16 +1,23 @@
 ## bill of materials
 <br />
 
-|volgnummer|naam|omschrijving|nieuw/recup|kostprijs/stuk|aantal|subtotaal|
-|----------|----|------------|-----------|---------|------|---------|
-|         1| DC motor |  https://nl.aliexpress.com/item/33022320164.html?spm=a2g0o.productlist.main.1.5ecdMhQDMhQD4t&algo_pvid=d4d1d1a9-237b-4d57-82d2-6ee508b6b75b  |   |  11.99euro |  2 |    23.98euro     |
-|         2|    18650 Li-Ion batterij       |   https://benl.rs-online.com/web/p/speciality-size-rechargeable-batteries/1834304?matchtype=&pla-301210096771&gad_source=1     |           |   10.13euro   |  2    |    20.26euro              |
-|         3|    TB6612FNG mosfet            |https://nl.aliexpress.com/item/1005006036493665.html?spm=a2g0o.productlist.main.5.d0ebi5yzi5yzIC&algo_pvid=cc2f19ec-7f1a-42fc-88f6-ec74245fccd5 |        |     6.29euro  |  1    |  6.29euro                |
-|         4|   pololu QTR-8RC                     | https://www.vanallesenmeer.nl/QTR-8RC-Reflectance-Sensor-Array-Pololu-961  |           |     10.95euro    |   1    |         10.95         |
-|         5|    arduino Leonardo  |    https://store.arduino.cc/products/arduino-leonardo-with-headers   |           |         21.60euro           |    1   |        21.60euro          |
-|         6|          HC-05     | https://nl.aliexpress.com/item/1005002168332848.html?spm=a2g0o.productlist.main.1.1f64Yb9bYb9bCE&algo_pvid=bac2d11e-88ab-4cbd-b543-a0180e3150d7  |         |     2.63euro   |    1   | 2.63 |
-|         7|        N20 wielen |  https://www.pololu.com/product/1088 | | 3.66euro | 1 | 3.66euro|
-|         8|     pololu 5V, 2.5A step-down voltage regulator | https://www.pololu.com/product/2858 | | 11.08euro | 1 | 11.08euro |
-|         9| rocker switch | https://www.pololu.com/product/1406 | | 1.16euro | 1 | 1.16euro |
-|        10| ball bearing | https://www.pololu.com/product/951 | | 2.31euro | 2 | 4.62euro |
-|        11|
+Component	quantity	Price per piece (euro)	url
+DC gearmotor 75:1	2	24,25	https://opencircuit.shop/product/751-micro-metal-gearmotor-hp-6v-extended-motor
+L298N motor driver	1	3,75	https://opencircuit.shop/product/l298n-motor-driver-module-h-bridge 
+pololu wheel 60x8mm	1	6,95	https://opencircuit.shop/product/pololu-wheel-60-%C3%97-8mm-white-2-pcs 
+arduino leonardo	1	22,2	https://opencircuit.shop/product/arduino-leonardo-with-headers 
+micro hearmotor brackets	1	4,05	https://opencircuit.shop/product/pololu-micro-metal-gearmotor-bracket-pair 
+QTR-8RC sensor array	1	12,95	https://opencircuit.shop/product/qtr-8rc-reflectance-sensor-array 
+HC-05 bluetooth module	1	5,15	https://opencircuit.shop/product/hc-05-bluetooth-module-met-adapter 
+Li-ion battery 3,6V 18650	2	7,5	https://www.123accu.nl/XTAR-14500-batterij-3-7-V-2A-800-mAh-i49468.html?channable=056b7a3132335f70726f647563745f696400f3&gad_source=1 
+18650 batteryholder 2x	1	1	https://www.otronic.nl/nl/18650-batterijhouder-dubbel.html?source=googlebase&gad_source=1 
+Total		119,55	
+			
+Optional			
+Led	1	2,7	https://opencircuit.shop/product/red-5mm-diffuse-leds-50-pcs 
+resistor	1	2,25	https://opencircuit.shop/product/1k%CF%89-metal-film-resistor-1-4w-100-pieces 
+cables	1	3,15	https://opencircuit.shop/product/male-female-20-cm-band-cable-40-pieces 
+experiment print plaat	1	2,5	https://opencircuit.shop/product/experiment-print-6.5-cm-14.5-cm-lanes-2-pieces 
+soldering station	1	62,2	https://opencircuit.shop/product/soldering-station-ceramic-heater-48w-150-420-c 
+Total + optional		192,35	
+![image](https://github.com/user-attachments/assets/47413898-d982-4af9-9c0d-5b0b6e824a43)
