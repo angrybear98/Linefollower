@@ -46,12 +46,19 @@ doe hetzelfde voor zwart boven een zuiver zwart oppervlakte.
 de robot zal nu de 2 extremen mappen en constrainen binnen de 2 waardes en duidelijk de lijn vinden.
 ### settings
 cycletime: 100000
+
 P-Value: 1
+
 I-Value: 4.4
+
 D-Value 0.58
+
 maxSpeed: 150
+
 baseSpeed: 35
+
 threshold: 650
+
 ### start/stop button
 door start te sturen zal de robot beginnen rijden en automatisch stoppen als de lijn verloren is.
 door stop te sturen zal de robot onmiddelijk stoppen met rijden en wachten op volgende orders.
