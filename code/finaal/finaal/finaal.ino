@@ -152,7 +152,7 @@ void loop()
 
     //integraal
     iTerm += params.ki * error;
-    iTerm = constrain(iTerm, -255, 255);
+    iTerm = constrain(iTerm, -params.max, params.max);
     correction += iTerm;
     
     //diferientiaal
@@ -162,7 +162,7 @@ void loop()
     lasterror = error;
     
     //constraint
-    correction = constrain(correction, -255, 255);
+    correction = constrain(correction, -params.max, params.max);
     
     // Set motor speeds based on correction
     int leftSpeed =  params.base + correction;
@@ -181,16 +181,7 @@ void loop()
       rightSpeed = rightSpeed + 50;
     }  */ 
     rightSpeed = constrain(rightSpeed, -params.max, params.max);
-    //BluetoothPort.print("error ");
-    //BluetoothPort.print(error);
-    //BluetoothPort.println();
-    //BluetoothPort.print("lastError ");
-    //BluetoothPort.print(lastError);
-    //BluetoothPort.println();  
-    //BluetoothPort.println(error);
-    //BluetoothPort.println(correction);
-    //BluetoothPort.println(" test");
-
+BluetoothPort.println(error);
 
     setMotorSpeed(leftSpeed, rightSpeed);
 
@@ -376,32 +367,24 @@ void onDebug()
 // Function to set motor speeds
 void setMotorSpeed(int leftSpeed, int rightSpeed) {
   int error = readSensors();
-  if(leftSpeed < 20) {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-  } else if (leftSpeed > 20)  {
+  if(error > -4) {
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, HIGH);
+  } else if (error < -4)  {
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
   } 
     //leftSpeed = -leftSpeed;  // Invert speed for reverse direction
-  if(rightSpeed < 20) {
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
-  } else if (rightSpeed > 20) {
+  if(error < 4) {
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, HIGH);
+  } else if (error > 4) {
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
     //rightSpeed = -rightSpeed;  // Invert speed for reverse direction
   }
-  
   analogWrite(ENA, abs(constrain(leftSpeed, 0, params.max)));
   analogWrite(ENB, abs(constrain(rightSpeed, 0, params.max)));
-  //BluetoothPort.println(leftSpeed);
-  //BluetoothPort.print(" leftSpeed");
-  //BluetoothPort.println(rightSpeed);
-  //BluetoothPort.print(" rightSpeed");
-  //BluetoothPort.println();
-
-
 }
 
 // Function to read sensors and calculate error
@@ -424,7 +407,7 @@ int readSensors() {
     normalised[i] = constrain((reformed[i]), 0, 1000);
   }    
    
-    int schaal = (normalised[0]*(-15) + normalised[1]*(-5) + normalised[2]*(-1) + normalised[3]*(1) + normalised[4]*(5) + normalised[5]*(15));
+    int schaal = (normalised[0]*(-12) + normalised[1]*(-5) + normalised[2]*(-1) + normalised[3]*(1) + normalised[4]*(5) + normalised[5]*(12));
     int som = (normalised[0]+normalised[1]+normalised[2]+normalised[3]+normalised[4]+normalised[5]);
     int error = schaal/som;
     //BluetoothPort.println(error);
@@ -448,7 +431,7 @@ int readSensors() {
 void followLine() {
     // Read sensors and calculate error
     int error = readSensors();
-
+  
     // Detect if no line is detected
   if   (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
         analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
@@ -540,7 +523,7 @@ void followLine() {
     //BluetoothPort.println(lastError);
     //BluetoothPort.println(" test");
 
-
+    BluetoothPort.println("test");
     setMotorSpeed(leftSpeed, rightSpeed);
 
 }
