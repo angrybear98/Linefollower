@@ -11,7 +11,7 @@ Hierna kan je in de terminal van de app verbinding maken met de module.
 #### commando's
 "debug" geeft de volgende parameters weer op het apparaat:
 
-Cycletime in microseconden: hoe snel de loop zal worden uitgevoerd (voorbeeld: 100000 stelt de loop in op 10 keer per seconde).
+Cycletime: hoe snel de loop zal worden uitgevoerd in microseconden (voorbeeld: 100000 stelt de loop in op 10 keer per seconde).
 P-Waarde: de P-waarde van de PID-parameters.
 I-Waarde: de I-waarde van de PID-parameters.
 D-Waarde: de D-waarde van de PID-parameters.
@@ -19,9 +19,11 @@ maxSpeed: de maximale snelheid waarmee het programma de motoren zal laten draaie
 baseSpeed: de basissnelheid waarmee het programma de motoren in een rechte lijn zal laten draaien (uit tests blijkt dat de minimale snelheid om de motoren te laten draaien 35 is).
 threshold: de waarde waarmee het programma bepaalt of er een lijn aanwezig is of niet (gebruikt voor verschillende soorten tracks met verschillende verlichting).
 calculationtime: de tijd die het programma nodig heeft om een enkele loop uit te voeren in microseconden.
-"set(ruimte)(parameter)(ruimte)(waarde)" stelt de vorige parameters in op de gewenste waarde. Voorbeeld: set cycle 100000 stelt de cycletime in op 100000 microseconden. Beschikbare commando's: cycle, kp, ki, kd, max, base, threshold. Berekeningstijd is een indicator voor fouten en kan daarom niet worden aangepast.
+"set(space)(parameter)(space)(waarde)" stelt de vorige parameters in op de gewenste waarde. Voorbeeld: set cycle 100000 stelt de cycletime in op 100000 microseconden. Beschikbare commando's: cycle, kp, ki, kd, max, base, threshold. Berekeningstijd is een indicator voor fouten en kan daarom niet worden aangepast.
 
-"calibrate white/black": dit kalibreert de sensoren voor witte en zwarte oppervlakken in het geval het programma de lijn niet direct kan detecteren. "debug calibration": dit geeft de gekalibreerde waarden voor zwart en wit weer. "start": start het programma en laat de robot lopen. 
+"calibrate white/black": dit kalibreert de sensoren voor witte en zwarte oppervlakken in het geval het programma de lijn niet direct kan detecteren. 
+"debug calibration": dit geeft de gekalibreerde waarden voor zwart en wit weer. 
+"start": start het programma en laat de robot lopen. 
 "stop": stopt het programma en zet de robot stil.
 
 ### kalibratie
