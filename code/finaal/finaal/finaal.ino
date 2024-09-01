@@ -124,12 +124,11 @@ void loop()
                 } else if (previous_error > 0) {
                     setMotorSpeed(params.base, -params.base);  // Turn right to search
                 }
-                searchStartTime = millis();  // Record the start time
+                searchStartTime = micros();  // Record the start time
                 isSearching = true;
               }
 
-            // Check if the search time has elapsed (e.g., 200 ms)
-            if (millis() - searchStartTime >= 200) {
+            if (micros() - searchStartTime >= params.cycleTime) {
                 // Check again if all sensors still detect no line
                 if (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
                     analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
@@ -147,15 +146,6 @@ void loop()
         isSearching = false;  // Reset the search flag if the line is found
     }
 
-    // Detect crossing (if all or most sensors detect the line)
-    if (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
-        analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
-        analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
-        
-        setMotorSpeed(params.base, params.base);  // Move straight ahead
-        delay(500);  // Continue straight for a short time
-        return;  // Skip the rest of the loop
-    }
 
     //proportioneel
     correction = params.kp * error;
@@ -171,7 +161,6 @@ void loop()
     correction += (params.kd * diff);
     lasterror = error;
     
-    BluetoothPort.println(error);
     //constraint
     correction = constrain(correction, -255, 255);
     
@@ -435,7 +424,7 @@ int readSensors() {
     normalised[i] = constrain((reformed[i]), 0, 1000);
   }    
    
-    int schaal = (normalised[0]*(-10) + normalised[1]*(-5) + normalised[2]*(-1) + normalised[3]*(1) + normalised[4]*(5) + normalised[5]*(10));
+    int schaal = (normalised[0]*(-15) + normalised[1]*(-5) + normalised[2]*(-1) + normalised[3]*(1) + normalised[4]*(5) + normalised[5]*(15));
     int som = (normalised[0]+normalised[1]+normalised[2]+normalised[3]+normalised[4]+normalised[5]);
     int error = schaal/som;
     //BluetoothPort.println(error);
