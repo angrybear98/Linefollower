@@ -45,13 +45,13 @@ Door de robot boven een zuiver wit oppervlakte te plaatsen en calibrate white in
 doe hetzelfde voor zwart boven een zuiver zwart oppervlakte.
 de robot zal nu de 2 extremen mappen en constrainen binnen de 2 waardes en duidelijk de lijn vinden.
 ### settings
-cycletime: 100000
+cycletime: 50000
 
 P-Value: 1
 
-I-Value: 4.4
+I-Value: 2.7
 
-D-Value 0.58
+D-Value 0.46
 
 maxSpeed: 150
 
