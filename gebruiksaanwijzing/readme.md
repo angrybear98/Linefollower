@@ -29,11 +29,15 @@ calculationtime: de tijd die het programma nodig heeft om een enkele loop uit te
 "set(space)(parameter)(space)(waarde)" stelt de vorige parameters in op de gewenste waarde. Voorbeeld: set cycle 100000 stelt de cycletime in op 100000 microseconden. 
 
 Beschikbare commando's: cycle, kp, ki, kd, max, base, threshold. 
+
 calculationtime is een indicator voor fouten en kan daarom niet worden aangepast.
 
 "calibrate white/black": dit kalibreert de sensoren voor witte en zwarte oppervlakken in het geval het programma de lijn niet direct kan detecteren. 
+
 "debug calibration": dit geeft de gekalibreerde waarden voor zwart en wit weer. 
+
 "start": start het programma en laat de robot lopen. 
+
 "stop": stopt het programma en zet de robot stil.
 
 ### kalibratie
