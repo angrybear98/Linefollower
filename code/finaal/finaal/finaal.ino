@@ -117,18 +117,21 @@ void loop()
             analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
             analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
             
-            if (!isSearching) {
+            if (isSearching == false) {
                 // No line detected, initiate a search
-                if (previous_error < 0) {
-                    setMotorSpeed(-params.base, params.base);  // Turn left to search
-                } else if (previous_error > 0) {
-                    setMotorSpeed(params.base, -params.base);  // Turn right to search
+                if (lasterror < 0) {
+                  BluetoothPort.println("hard left");
+                    setMotorSpeed(-(params.base), (params.base));  // Turn left to search
+                } else if (lasterror > 0) {
+                  BluetoothPort.println("hard right");
+                    setMotorSpeed((params.base), -(params.base));  // Turn right to search
                 }
                 searchStartTime = micros();  // Record the start time
+                BluetoothPort.println("searching");
                 isSearching = true;
               }
 
-            if (micros() - searchStartTime >= params.cycleTime) {
+            if ((micros() - searchStartTime >= params.cycleTime*5) && isSearching) {
                 // Check again if all sensors still detect no line
                 if (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
                     analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
@@ -142,11 +145,15 @@ void loop()
                 isSearching = false;  // Reset the search flag
                 return;  // Skip the rest of the loop
             }
-        } else {
+        } else 
+        {
         isSearching = false;  // Reset the search flag if the line is found
-    }
+        }
 
 
+
+
+    if (isSearching == false){
     //proportioneel
     correction = params.kp * error;
 
@@ -181,9 +188,9 @@ void loop()
       rightSpeed = rightSpeed + 50;
     }  */ 
     rightSpeed = constrain(rightSpeed, -params.max, params.max);
-BluetoothPort.println(error);
-
+    //BluetoothPort.println(error);      
     setMotorSpeed(leftSpeed, rightSpeed);
+    }
 
     }
     // Normalize and interpolate sensor
@@ -280,6 +287,7 @@ void onStart()
   SerialPort.println("starting");
   BluetoothPort.println("starting");
     isRunning = true;
+    isSearching = false;
     iTerm = 0;
 }
 
@@ -367,24 +375,33 @@ void onDebug()
 // Function to set motor speeds
 void setMotorSpeed(int leftSpeed, int rightSpeed) {
   int error = readSensors();
-  if(error > -4) {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-  } else if (error < -4)  {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
+  if(error > -4 && leftSpeed > 0) {
+    digitalWrite(IN1, 0);
+    digitalWrite(IN2, 1);
+    BluetoothPort.print("leftSpeed ");
+    BluetoothPort.print(leftSpeed);
+    BluetoothPort.println();    
+  } else if (error < -4 || (leftSpeed < 0 && rightSpeed > 0))  {
+    digitalWrite(IN1, 1);
+    digitalWrite(IN2, 0);
   } 
     //leftSpeed = -leftSpeed;  // Invert speed for reverse direction
-  if(error < 4) {
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-  } else if (error > 4) {
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
+  if(error < 4 && rightSpeed > 0) {
+    digitalWrite(IN3, 0);
+    digitalWrite(IN4, 1);
+    BluetoothPort.print("rightSpeed ");
+    BluetoothPort.print(rightSpeed);
+    BluetoothPort.println();
+  } else if (error > 4 || (rightSpeed < 0 && leftSpeed > 0)) {
+    BluetoothPort.print("rightSpeed ");
+    BluetoothPort.print(rightSpeed);
+    BluetoothPort.println();
+    digitalWrite(IN3, 1);
+    digitalWrite(IN4, 0);
     //rightSpeed = -rightSpeed;  // Invert speed for reverse direction
   }
-  analogWrite(ENA, abs(constrain(leftSpeed, 0, params.max)));
-  analogWrite(ENB, abs(constrain(rightSpeed, 0, params.max)));
+  analogWrite(ENA, abs(constrain(leftSpeed, -params.max, params.max)));
+  analogWrite(ENB, abs(constrain(rightSpeed, -params.max, params.max)));
 }
 
 // Function to read sensors and calculate error
@@ -428,105 +445,7 @@ int readSensors() {
   return error / 100;  // Return the average error
 }*/
 
-void followLine() {
-    // Read sensors and calculate error
-    int error = readSensors();
-  
-    // Detect if no line is detected
-  if   (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
-        analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
-        analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
-        
-        if (!isSearching) {
-            // No line detected, initiate a search
-            if (previous_error < 0) {
-                setMotorSpeed(-params.base, params.base);  // Turn left to search
-            } else if (previous_error > 0) {
-                setMotorSpeed(params.base, -params.base);  // Turn right to search
-            }
-            searchStartTime = millis();  // Record the start time
-            isSearching = true;
-        }
 
-        // Check if the search time has elapsed (e.g., 200 ms)
-        if (millis() - searchStartTime >= 200) {
-            // Check again if all sensors still detect no line
-            if (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
-                analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
-                analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
-                isRunning = false;
-                analogWrite(ENA, 0);
-                analogWrite(ENB, 0); 
-                onStop();  
-                BluetoothPort.println("lost line");
-            }
-            isSearching = false;  // Reset the search flag
-            return;  // Skip the rest of the loop
-        }
-    } else {
-        isSearching = false;  // Reset the search flag if the line is found
-    }
-
-    // Detect crossing (if all or most sensors detect the line)
-    if (analogRead(sensor[0]) < params.threshold && analogRead(sensor[1]) < params.threshold &&
-        analogRead(sensor[2]) < params.threshold && analogRead(sensor[3]) < params.threshold &&
-        analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
-        
-        setMotorSpeed(params.base, params.base);  // Move straight ahead
-        delay((params.cycleTime)/1000);  // Continue straight for a short time
-        return;  // Skip the rest of the loop
-    }
-
-    //proportioneel
-    correction = params.kp * error;
-
-    //integraal
-    iTerm += params.ki * error;
-    iTerm = constrain(iTerm, -255, 255);
-    correction += iTerm;
-    
-    //diferientiaal
-    int lasterror;
-    int diff;
-    diff = (error - lasterror);
-    correction += (params.kd * diff);
-    lasterror = error;
-    //BluetoothPort.println("diff: "+ diff);
-    //constraint
-    correction = correction*(params.base/35);
-    correction = constrain(correction, -255, 255);
-    
-    // Set motor speeds based on correction
-    int leftSpeed =  params.base + correction;
-    /*if (leftSpeed <= 25 && leftSpeed >= -25 && leftSpeed > 0){
-      leftSpeed = leftSpeed - 50;
-    }
-    else if (leftSpeed <= 25 && leftSpeed >= -25 && leftSpeed < 0){
-      leftSpeed = leftSpeed + 50;
-    }*/
-    leftSpeed = constrain(leftSpeed, -params.max, params.max);
-    int rightSpeed = params.base - correction;
-    /* if (rightSpeed <= 25 && rightSpeed >= -25 && rightSpeed > 0){
-      rightSpeed = rightSpeed - 50;
-    }
-    else if (rightSpeed <= 25 && rightSpeed >= -25 && rightSpeed < 0){
-      rightSpeed = rightSpeed + 50;
-    }  */ 
-    rightSpeed = constrain(rightSpeed, -params.max, params.max);
-    //BluetoothPort.println("error "+ error);
-    //BluetoothPort.print(error);
-    //BluetoothPort.println();
-    //BluetoothPort.print("lastError ");
-    //BluetoothPort.print(lastError);
-    //BluetoothPort.println();  
-    //BluetoothPort.println(diff);
-    //BluetoothPort.println(lastError);
-    //BluetoothPort.println(" test");
-
-    BluetoothPort.println("test");
-    setMotorSpeed(leftSpeed, rightSpeed);
-
-}
 
 void onCalibrate()
 {
