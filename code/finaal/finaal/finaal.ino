@@ -473,7 +473,7 @@ void followLine() {
         analogRead(sensor[4]) < params.threshold && analogRead(sensor[5]) < params.threshold) {
         
         setMotorSpeed(params.base, params.base);  // Move straight ahead
-        delay(500);  // Continue straight for a short time
+        delay((params.cycleTime)/1000);  // Continue straight for a short time
         return;  // Skip the rest of the loop
     }
 
